@@ -3,29 +3,12 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, TextInput, Keyboard, Butt
 import Property from '../../components/Property';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddHoursModal from '../../components/AddHoursModal';
-import * as SQLite from 'expo-sqlite';
-// import {openDatabase, SQLiteDatabase, enablePromise} from 'react-native-sqlite-storage';
-
-const db = SQLite.openDatabase('properties.db');
-
-const createTable = () => {
-  db.transaction((tx) => {
-    tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS properties (id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, propertyName TEXT, hours INTEGER, materialParticipation TEXT, description TEXT)',
-      [],
-      () => {
-        console.log('Table created successfully');
-      },
-      (error) => {
-        console.log('Error creating table:', error);
-      }
-    );
-  });
-};
-
-createTable();
+import {createTable, addPropertyDB, deletePropertyDB } from '../../components/PropertiesDB';
 
 export default function PropertiesScreen( {navigation}) {
+  useEffect(() => {
+    createTable();
+  }, []);
   const [property, setProperty] = useState();
   const [propertyItems, setPropertyItems] = useState([]);
   // New Modal
@@ -46,25 +29,27 @@ export default function PropertiesScreen( {navigation}) {
     Keyboard.dismiss();
     setPropertyItems([...propertyItems, property]);
     setProperty(null);
+    addPropertyDB(property, propertyItems, setPropertyItems);
 
-    db.transaction((tx) => {
-      console.log(property)
-      tx.executeSql(
-        'INSERT INTO properties (propertyName) VALUES (?)',
-        [property],
-        () => {
-          console.log('Property added successfully');
-          setPropertyItems([...propertyItems, property]);
-          setProperty(null);
-        },
-        (error) => {
-          console.log('Error adding property:', error);
-        }
-      );
-    });
+    // db.transaction((tx) => {
+    //   console.log(property)
+    //   tx.executeSql(
+    //     'INSERT INTO properties (propertyName) VALUES (?)',
+    //     [property],
+    //     () => {
+    //       console.log('Property added successfully');
+    //       setPropertyItems([...propertyItems, property]);
+    //       setProperty(null);
+    //     },
+    //     (error) => {
+    //       console.log('Error adding property:', error);
+    //     }
+    //   );
+    // });
   }
 
   const deleteProperty = (index) => {
+    console.log("OnPress");
     Alert.alert(
       'Confirmation',
       'Are you sure you want to delete the property?',
@@ -77,26 +62,28 @@ export default function PropertiesScreen( {navigation}) {
           text: 'Delete',
           style: 'destructive',
           onPress: () => {
+            console.log("Delete");
             let propertiesCopy = [...propertyItems];
             const deletedProperty = propertiesCopy[index];
             propertiesCopy.splice(index, 1);
             setPropertyItems(propertiesCopy);
-            console.log(deletedProperty)
-            db.transaction((tx) => {
-              tx.executeSql(
-                'DELETE FROM properties WHERE propertyName = ?',
-                [deletedProperty],
-                () => {
-                  console.log('Property deleted successfully');
-                  let propertiesCopy = [...propertyItems];
-                  propertiesCopy.splice(index, 1);
-                  setPropertyItems(propertiesCopy);
-                },
-                (error) => {
-                  console.log('Error deleting property:', error);
-                }
-              );
-            });
+            //console.log(deletedProperty)
+            deletePropertyDB(deletedProperty, index, propertyItems, setPropertyItems)
+            // db.transaction((tx) => {
+            //   tx.executeSql(
+            //     'DELETE FROM properties WHERE propertyName = ?',
+            //     [deletedProperty],
+            //     () => {
+            //       console.log('Property deleted successfully');
+            //       let propertiesCopy = [...propertyItems];
+            //       propertiesCopy.splice(index, 1);
+            //       setPropertyItems(propertiesCopy);
+            //     },
+            //     (error) => {
+            //       console.log('Error deleting property:', error);
+            //     }
+            //   );
+            // });
           },
         },
       ],
@@ -187,7 +174,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 250,
     
-
   },
   addWrapper: {
     width: 60,
