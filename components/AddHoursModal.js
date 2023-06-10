@@ -5,8 +5,9 @@ import { View, Text, Modal, Button, StyleSheet, TouchableOpacity, Alert, TextInp
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Picker from 'react-native-picker-select';
 import ErrorComponent from './ErrorComponent';
+import { AddPropertyValuesDB } from './PropertiesDB';
 
-const AddHoursModal = ({ visible, closeModal }) => {
+const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
   const [yesNoValue, setyesNoValue] = useState(null);
   const [numberValue, setnumberValue] = useState(null);
   const [date, setDate] = useState(new Date());
@@ -64,10 +65,16 @@ const AddHoursModal = ({ visible, closeModal }) => {
         {
           text: 'Add',
           onPress: () => {
+            AddPropertyValuesDB(date, numberValue, yesNoValue, description, selectedProperty);
+            console.log("Selected property:", selectedProperty);
             console.log("Selected date:", date);
             console.log("Selected hours:", numberValue);
             console.log("Selected Material Participation:", yesNoValue);
             console.log("Selected Material Participation Description:", description);
+            setDate(new Date());
+            setnumberValue(null);
+            setyesNoValue(null);
+            setDescription(null);
             closeModal();
           },
         },

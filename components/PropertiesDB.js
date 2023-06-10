@@ -19,8 +19,13 @@
 // };
 // export { createTable, db};
 import * as SQLite from 'expo-sqlite';
+import React from 'react';
+import { View, Text, Modal } from 'react-native';
+import AddHoursModal from './AddHoursModal';
+
 
 const db = SQLite.openDatabase('properties.db');
+// const propertiesArray = [];
 
 const createTable = () => {
   db.transaction((tx) => {
@@ -90,4 +95,22 @@ const deletePropertyDB = (deletedProperty, index, propertyItems, setPropertyItem
       );
     });
   };
-export { createTable, addPropertyDB, deletePropertyDB, db };
+
+
+const AddPropertyValuesDB = (date, numberValue, yesNoValue, description, selectedProperty) => {
+  db.transaction((tx) => {
+    // console.log(property)
+    tx.executeSql(
+      'INSERT INTO properties (date, hours, materialParticipation, description) SELECT ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM properties WHERE propertyName = ?)',
+        [date, numberValue, yesNoValue, description, selectedProperty],
+      () => {
+        console.log(`${date}, ${numberValue}, ${yesNoValue}, ${description} all added to ${selectedProperty}`);
+        // setPropertyItems([...propertyItems, property]);
+      },
+      (error) => {
+        console.log('Error adding property:', error);
+      }
+    );
+  });
+};
+export { createTable, addPropertyDB, deletePropertyDB, AddPropertyValuesDB, db };

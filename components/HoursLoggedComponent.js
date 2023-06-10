@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
-const Property = (props) => {
+const HoursLoggedComponent = (props) => {
 
   const handleDeleteProperty = () => {
     props.onDelete();
@@ -12,16 +12,20 @@ const Property = (props) => {
   }
 
   return (
-    <View style={styles.property}>
-      <View style={styles.propertyLeft}>
-        <View style={styles.square}></View>
-        <Text style={styles.propertyText}>{props.text}</Text>
+    <TouchableOpacity>
+      <View style={styles.property}>
+        <View style={styles.propertyLeft}>
+          <Text style={styles.propertyText}>Property</Text>
+          <Text style={styles.propertyText}>Material Participation</Text>
+          <Text style={styles.propertyText}>Description</Text>
+          <Text style={styles.propertyText}>Date</Text>
+        </View>
+        {/* <View style={styles.circular}></View> */}
+        <TouchableOpacity onPress={() => handleDeleteProperty()}>
+        <Ionicons style={styles.trashcan} name={'trash'} size={14}/>
+        </TouchableOpacity>
       </View>
-      {/* <View style={styles.circular}></View> */}
-      <TouchableOpacity onPress={() => handleDeleteProperty()}>
-      <Ionicons style={styles.trashcan} name={'trash'} size={14}/>
-      </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   )
 }
 
@@ -34,6 +38,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 20,
+    height: 50,
   },
   propertyLeft: {
     flexDirection: 'row',
@@ -50,6 +55,10 @@ const styles = StyleSheet.create({
   },
   propertyText: {
     maxWidth: '80%',
+    // flexWrap: 'wrap',
+    // breakMode: 'word-wrap',
+    // paddingVertical: 4, // Add vertical padding
+    paddingHorizontal: 8,
   },
   trashcan: {
     width: 14,
@@ -60,4 +69,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Property;
+export default HoursLoggedComponent;

@@ -1,25 +1,33 @@
 import React, { useState, useEffect} from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, TextInput, Keyboard, Button, Alert, TouchableWithoutFeedback} from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, TextInput, Keyboard, Button, Alert, TouchableWithoutFeedback, ScrollView} from 'react-native';
 import Property from '../../components/Property';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddHoursModal from '../../components/AddHoursModal';
 import {createTable, addPropertyDB, deletePropertyDB } from '../../components/PropertiesDB';
+import RealEstateProgressBars from '../../components/RealEstateProgressBars';
 
 export default function PropertiesScreen( {navigation}) {
   useEffect(() => {
     createTable();
   }, []);
   const [property, setProperty] = useState();
+  const [selectedProperty, setSelectedProperty] = useState();
   const [propertyItems, setPropertyItems] = useState([]);
   // New Modal
   const [modalVisible, setModalVisible] = useState(false);
 
-  const openModal = () => {
+  const openModal = (userSelectedProperty) => {
+    // setSelectedProperty(userSelectedProperty);
+    console.log(userSelectedProperty);
+    setSelectedProperty(userSelectedProperty);
     setModalVisible(true);
+    // return (<AddHoursModal visible={modalVisible} selectedProperty={userSelectedProperty} closeModal={closeModal} />);
+
   };
   
   const closeModal = () => {
     setModalVisible(false);
+    // setProperty(null);
   };
   // New Modal
 
@@ -92,9 +100,11 @@ export default function PropertiesScreen( {navigation}) {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.container}>
+    {/* <ScrollView style={styles.scrollViewStyle}> */}
       {/* Properties */}
+      <ScrollView style={styles.scrollViewStyle}>
       <View style={styles.propertiesWrapper}>
         <Text style={styles.sectionTitle}>Properties</Text>
         <Text style={styles.subTitle}>Add a Property and Tap to Add Hours</Text>
@@ -104,7 +114,7 @@ export default function PropertiesScreen( {navigation}) {
           {
             propertyItems.map((property, index) => {
               return (
-                <TouchableOpacity key={index} onPress={openModal} >
+                <TouchableOpacity key={index} onPress={() => openModal(property)} >
                   <Property  text={property} onDelete={() => deleteProperty(index)}/>
                 </TouchableOpacity>
               )
@@ -112,6 +122,23 @@ export default function PropertiesScreen( {navigation}) {
           }
         </View>
       </View>
+      <View style={styles.progressBarsContainer}>
+        <Text style={styles.generalRealEstateText}>General Real Estate Hours (#ofHours / 250)</Text>
+        <View style={styles.progressBarContainer}>
+            <RealEstateProgressBars style={styles.progressBar} />
+        </View>
+        <Text style={styles.generalRealEstateText}>Material Participation Hours (#ofHours / 500)</Text>
+        <View style={styles.progressBarContainer}>
+            <RealEstateProgressBars style={styles.progressBar} />
+        </View>
+        <Text style={styles.totalHoursText}>Total Hours (#ofHours / 750)</Text>
+        <View style={styles.progressBarContainer}>
+            <RealEstateProgressBars style={styles.progressBar} />
+        </View>
+      </View>
+      </ScrollView>
+      
+      {/* </ScrollView> */}
 
       {/* Write a property */}
       <KeyboardAvoidingView
@@ -128,11 +155,14 @@ export default function PropertiesScreen( {navigation}) {
       {/* New Modal */}
       <View>
         <Button title="Open Modal" onPress={openModal} />
-        <AddHoursModal visible={modalVisible} closeModal={closeModal} />
+        <AddHoursModal visible={modalVisible} selectedProperty={selectedProperty} closeModal={closeModal} />
       </View>
       {/* New Modal */}
     </View>
-    </TouchableWithoutFeedback>
+    
+    // </TouchableWithoutFeedback>
+    
+    
   );
 }
 
@@ -144,6 +174,8 @@ const styles = StyleSheet.create({
   propertiesWrapper:{
     paddingTop: 30,
     paddingHorizontal: 20,
+    paddingBottom: 80,
+    
   },
   sectionTitle: {
     fontSize: 24,
@@ -156,10 +188,11 @@ const styles = StyleSheet.create({
   },
   properties: {
     marginTop: 30,
+    
   },
   writePropertyWrapper: {
     position: 'absolute',
-    bottom: 60,
+    bottom: 40,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -187,5 +220,35 @@ const styles = StyleSheet.create({
     fontSize: 34,
     color: '#fff',
   },
-  
+  scrollViewStyle: {
+    // flexGrow: 1,
+    
+  },
+  progressBarsContainer: {
+    paddingBottom: 50,
+  },
+  progressBarContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 20,
+  },
+  progressBar: {
+    // position: 'absolute',
+    // bottom: 10,
+    
+  },
+  generalRealEstateText: {
+    paddingBottom: 2,
+    marginLeft: 5,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  totalHoursText : {
+    paddingBottom: 2,
+    marginLeft: 5,
+    paddingHorizontal: 20,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
 });
