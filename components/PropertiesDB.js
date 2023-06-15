@@ -21,7 +21,6 @@
 import * as SQLite from 'expo-sqlite';
 import React from 'react';
 import { View, Text, Modal } from 'react-native';
-import AddHoursModal from './AddHoursModal';
 
 
 const db = SQLite.openDatabase('properties.db');
@@ -97,20 +96,102 @@ const deletePropertyDB = (deletedProperty, index, propertyItems, setPropertyItem
   };
 
 
-const AddPropertyValuesDB = (date, numberValue, yesNoValue, description, selectedProperty) => {
-  db.transaction((tx) => {
-    // console.log(property)
-    tx.executeSql(
-      'INSERT INTO properties (date, hours, materialParticipation, description) SELECT ?, ?, ?, ? WHERE NOT EXISTS (SELECT 1 FROM properties WHERE propertyName = ?)',
+  const AddPropertyValuesDB = (date, numberValue, yesNoValue, description, selectedProperty) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        'UPDATE properties SET date = ?, hours = ?, materialParticipation = ?, description = ? WHERE propertyName = ?',
         [date, numberValue, yesNoValue, description, selectedProperty],
-      () => {
-        console.log(`${date}, ${numberValue}, ${yesNoValue}, ${description} all added to ${selectedProperty}`);
-        // setPropertyItems([...propertyItems, property]);
+        () => {
+          console.log(`${date}, ${numberValue}, ${yesNoValue}, ${description} updated for ${selectedProperty}`);
+        },
+        (error) => {
+          console.log('Error updating property:', error);
+        }
+      );
+    });
+  };
+
+const selectTotalHoursFromProperties = (callback) => {
+  console.log("in function");
+  db.transaction((tx) => {
+    tx.executeSql(
+      'SELECT hours FROM properties WHERE hours IS NOT NULL',
+      [],
+      (_, { rows }) => {
+        const results = rows._array.map((row) => row.hours);
+        callback(results);
+        console.log(results);
       },
       (error) => {
-        console.log('Error adding property:', error);
+        console.log('Error selecting hours from properties:', error);
+        callback([]);
       }
     );
   });
 };
-export { createTable, addPropertyDB, deletePropertyDB, AddPropertyValuesDB, db };
+
+const selectGeneralHoursFromProperties = (callback) => {
+  console.log("in function");
+  db.transaction((tx) => {
+    tx.executeSql(
+      'SELECT hours FROM properties WHERE materialParticipation = "no"',
+      [],
+      (_, { rows }) => {
+        const results = rows._array.map((row) => row.hours);
+        callback(results);
+        console.log(results);
+      },
+      (error) => {
+        console.log('Error selecting hours from properties:', error);
+        callback([]);
+      }
+    );
+  });
+};
+
+const selectMaterialParticipationHoursFromProperties = (callback) => {
+  console.log("in function");
+  db.transaction((tx) => {
+    tx.executeSql(
+      'SELECT hours FROM properties WHERE materialParticipation = "yes"',
+      [],
+      (_, { rows }) => {
+        const results = rows._array.map((row) => row.hours);
+        callback(results);
+        console.log(results);
+      },
+      (error) => {
+        console.log('Error selecting hours from properties:', error);
+        callback([]);
+      }
+    );
+  });
+};
+
+const getAllPropertyValuesDB = (callback) => {
+  console.log("here")
+  db.transaction((tx) => {
+    tx.executeSql(
+      'SELECT propertyName, date, hours, materialParticipation, description FROM properties',
+      [],
+      (_, { rows }) => {
+        const results = rows._array.map((row) => ({
+          propertyName: row.propertyName,
+          date: row.date,
+          hours: row.hours,
+          materialParticipation: row.materialParticipation,
+          description: row.description,
+        }));
+        callback(results);
+        console.log("Got all property data");
+      },
+      (error) => {
+        console.log('Error selecting property values:', error);
+        callback([]);
+      }
+    );
+  });
+};
+
+
+export { createTable, addPropertyDB, deletePropertyDB, AddPropertyValuesDB, selectTotalHoursFromProperties, selectGeneralHoursFromProperties, selectMaterialParticipationHoursFromProperties, getAllPropertyValuesDB, db };

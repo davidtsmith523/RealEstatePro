@@ -23,10 +23,10 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
 
-function RealEstateProgressBars() {
+function RealEstateProgressBars(props) {
   return (
     <View style={styles.progressBarContainer}>
-      <ProgressBar progress={0.5} style={styles.progressBar} color={'#6AE431'}height={20} width={null} borderWidth={1} />
+      <ProgressBar progress={props.progress} style={styles.progressBar} color={'#6AE431'}height={20} width={null} borderWidth={1} />
     </View>
   );
 }

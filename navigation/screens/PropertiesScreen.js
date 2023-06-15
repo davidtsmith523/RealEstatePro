@@ -3,16 +3,59 @@ import { View, Text, StyleSheet, KeyboardAvoidingView, TextInput, Keyboard, Butt
 import Property from '../../components/Property';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddHoursModal from '../../components/AddHoursModal';
-import {createTable, addPropertyDB, deletePropertyDB } from '../../components/PropertiesDB';
+import {createTable, addPropertyDB, deletePropertyDB, selectTotalHoursFromProperties, selectGeneralHoursFromProperties, selectMaterialParticipationHoursFromProperties, getAllPropertyValuesDB } from '../../components/PropertiesDB';
 import RealEstateProgressBars from '../../components/RealEstateProgressBars';
 
 export default function PropertiesScreen( {navigation}) {
+  const [totalHours, setTotalHours] = useState([]);
+  const [generalHours, setGeneralHours] = useState([]);
+  const [materialParticipationHours, setMaterialParticipationHours] = useState([]);
+  const [propertyNames, setPropertyNames] = useState([]);
+  const [property, setProperty] = useState();
+  const [propertyItems, setPropertyItems] = useState([]);
+
+
+
+
+  useEffect(() => {
+    fetchPropertyNames();
+    console.log("here5");
+  }, []);
+
+  const fetchPropertyNames = () => {
+    getAllPropertyValuesDB((results) => {
+      const names = results.map((property) => property.propertyName);
+      setPropertyItems(names);
+      console.log(names)
+    });
+  };
+  
+
+  useEffect(() => {
+    // Retrieve Total Hours from the database
+    selectTotalHoursFromProperties((hoursArray) => {
+      setTotalHours(hoursArray.reduce((a, b) => a + b, 0));
+    });
+  }, [selectTotalHoursFromProperties]);
+
+  useEffect(() => {
+    // Retrieve General Hours from the database
+    selectGeneralHoursFromProperties((hoursArray) => {
+      setGeneralHours(hoursArray.reduce((a, b) => a + b, 0));
+    });
+  }, [selectGeneralHoursFromProperties]);
+
+  useEffect(() => {
+    // Retrieve Material Participation Hours from the database
+    selectMaterialParticipationHoursFromProperties((hoursArray) => {
+      setMaterialParticipationHours(hoursArray.reduce((a, b) => a + b, 0));
+    });
+  }, [selectMaterialParticipationHoursFromProperties]);
+
   useEffect(() => {
     createTable();
   }, []);
-  const [property, setProperty] = useState();
   const [selectedProperty, setSelectedProperty] = useState();
-  const [propertyItems, setPropertyItems] = useState([]);
   // New Modal
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -123,17 +166,22 @@ export default function PropertiesScreen( {navigation}) {
         </View>
       </View>
       <View style={styles.progressBarsContainer}>
-        <Text style={styles.generalRealEstateText}>General Real Estate Hours (#ofHours / 250)</Text>
+        <Text style={styles.generalRealEstateText}>General Real Estate Hours</Text>
+        <Text style={styles.hoursSubheading}>{generalHours} / 250 hours</Text>
         <View style={styles.progressBarContainer}>
-            <RealEstateProgressBars style={styles.progressBar} />
+            <RealEstateProgressBars progress={generalHours / 250} style={styles.progressBar} />
         </View>
-        <Text style={styles.generalRealEstateText}>Material Participation Hours (#ofHours / 500)</Text>
+        <Text style={styles.generalRealEstateText}>Material Participation Hours</Text>
+        <Text style={styles.hoursSubheading}>{materialParticipationHours} / 500 hours</Text>
+
         <View style={styles.progressBarContainer}>
-            <RealEstateProgressBars style={styles.progressBar} />
+            <RealEstateProgressBars progress={materialParticipationHours / 500} style={styles.progressBar} />
         </View>
-        <Text style={styles.totalHoursText}>Total Hours (#ofHours / 750)</Text>
+        <Text style={styles.totalHoursText}>Total Hours</Text>
+        <Text style={styles.hoursSubheading}>{totalHours} / 750 hours</Text>
+
         <View style={styles.progressBarContainer}>
-            <RealEstateProgressBars style={styles.progressBar} />
+          <RealEstateProgressBars progress={totalHours / 750} style={styles.progressBar} />
         </View>
       </View>
       </ScrollView>
@@ -188,7 +236,6 @@ const styles = StyleSheet.create({
   },
   properties: {
     marginTop: 30,
-    
   },
   writePropertyWrapper: {
     position: 'absolute',
@@ -249,6 +296,13 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     paddingHorizontal: 20,
     fontSize: 20,
+    fontWeight: 'bold',
+  },
+  hoursSubheading: {
+    paddingBottom: 2,
+    marginLeft: 5,
+    paddingHorizontal: 20,
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });

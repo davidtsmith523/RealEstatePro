@@ -3,31 +3,28 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-
 const HoursLoggedComponent = (props) => {
-
   const handleDeleteProperty = () => {
     props.onDelete();
     console.log('here');
-  }
+  };
 
   return (
     <TouchableOpacity>
       <View style={styles.property}>
         <View style={styles.propertyLeft}>
-          <Text style={styles.propertyText}>Property</Text>
-          <Text style={styles.propertyText}>Material Participation</Text>
-          <Text style={styles.propertyText}>Description</Text>
-          <Text style={styles.propertyText}>Date</Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Property: </Text>1234 West Star Street</Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Material Participation: </Text>Yes</Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Description: </Text>I raked up the yard that was full of leaves. I also painted a dresser and mopped around the house for new tenets</Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Date: </Text>June 4, 2023 </Text>
         </View>
-        {/* <View style={styles.circular}></View> */}
         <TouchableOpacity onPress={() => handleDeleteProperty()}>
-        <Ionicons style={styles.trashcan} name={'trash'} size={14}/>
+          <Ionicons style={styles.trashcan} name={'trash'} size={14} />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   property: {
@@ -35,15 +32,13 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start', // Adjust vertical alignment as needed
     justifyContent: 'space-between',
     marginBottom: 20,
-    height: 50,
   },
   propertyLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   square: {
     width: 24,
@@ -55,18 +50,16 @@ const styles = StyleSheet.create({
   },
   propertyText: {
     maxWidth: '80%',
-    // flexWrap: 'wrap',
-    // breakMode: 'word-wrap',
-    // paddingVertical: 4, // Add vertical padding
     paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   trashcan: {
     width: 14,
     height: 14,
-    // borderColor: '#55BCF6',
-    // borderWidth: 2,
-    // borderRadius: 5,
   },
+  boldText: {
+    fontWeight: 'bold',
+  }
 });
 
 export default HoursLoggedComponent;

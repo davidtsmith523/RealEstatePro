@@ -1,10 +1,14 @@
 import * as react from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, useEffect} from 'react-native';
 import PropertiesScreen from './PropertiesScreen';
 // import Property from '../../components/Property';
 import HoursLoggedComponent from '../../components/HoursLoggedComponent';
+import { getAllPropertyValuesDB } from '../../components/PropertiesDB';
+
 
 export default function HoursLoggedScreen( {navigation}) {
+
+
   return (
     // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
     //   <Text
