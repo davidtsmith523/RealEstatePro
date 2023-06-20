@@ -8,7 +8,7 @@ const Property = (props) => {
 
   const handleDeleteProperty = () => {
     props.onDelete();
-    console.log('here');
+    // console.log('here');
   }
 
   return (

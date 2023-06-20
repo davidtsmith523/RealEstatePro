@@ -23,6 +23,7 @@ import React from 'react';
 import { View, Text, Modal } from 'react-native';
 
 
+
 const db = SQLite.openDatabase('properties.db');
 // const propertiesArray = [];
 
@@ -78,7 +79,7 @@ const addPropertyDB = (property, propertyItems, setPropertyItems) => {
 // };
 const deletePropertyDB = (deletedProperty, index, propertyItems, setPropertyItems) => {
   db.transaction((tx) => {
-    console.log(deletedProperty);
+    // console.log(deletedProperty);
     tx.executeSql(
       'DELETE FROM properties WHERE propertyName = ?',
       [deletedProperty],
@@ -96,16 +97,16 @@ const deletePropertyDB = (deletedProperty, index, propertyItems, setPropertyItem
   };
 
 
-  const AddPropertyValuesDB = (date, numberValue, yesNoValue, description, selectedProperty) => {
+  const AddPropertyValuesDB = (date, hours, materialParticipation, description, selectedProperty) => {
     db.transaction((tx) => {
       tx.executeSql(
-        'UPDATE properties SET date = ?, hours = ?, materialParticipation = ?, description = ? WHERE propertyName = ?',
-        [date, numberValue, yesNoValue, description, selectedProperty],
+        'INSERT INTO properties (date, hours, materialParticipation, description, propertyName) VALUES (?, ?, ?, ?, ?)',
+        [date, hours, materialParticipation, description, selectedProperty],
         () => {
-          console.log(`${date}, ${numberValue}, ${yesNoValue}, ${description} updated for ${selectedProperty}`);
+          console.log(`${date}, ${hours}, ${materialParticipation}, ${description} added for ${selectedProperty}`);
         },
         (error) => {
-          console.log('Error updating property:', error);
+          console.log('Error adding property:', error);
         }
       );
     });
@@ -120,7 +121,7 @@ const selectTotalHoursFromProperties = (callback) => {
       (_, { rows }) => {
         const results = rows._array.map((row) => row.hours);
         callback(results);
-        console.log(results);
+        // console.log(results);
       },
       (error) => {
         console.log('Error selecting hours from properties:', error);
@@ -134,12 +135,12 @@ const selectGeneralHoursFromProperties = (callback) => {
   console.log("in function");
   db.transaction((tx) => {
     tx.executeSql(
-      'SELECT hours FROM properties WHERE materialParticipation = "no"',
+      'SELECT hours FROM properties WHERE materialParticipation = "No"',
       [],
       (_, { rows }) => {
         const results = rows._array.map((row) => row.hours);
         callback(results);
-        console.log(results);
+        // console.log(results);
       },
       (error) => {
         console.log('Error selecting hours from properties:', error);
@@ -153,12 +154,12 @@ const selectMaterialParticipationHoursFromProperties = (callback) => {
   console.log("in function");
   db.transaction((tx) => {
     tx.executeSql(
-      'SELECT hours FROM properties WHERE materialParticipation = "yes"',
+      'SELECT hours FROM properties WHERE materialParticipation = "Yes"',
       [],
       (_, { rows }) => {
         const results = rows._array.map((row) => row.hours);
         callback(results);
-        console.log(results);
+        // console.log(results);
       },
       (error) => {
         console.log('Error selecting hours from properties:', error);
@@ -193,5 +194,23 @@ const getAllPropertyValuesDB = (callback) => {
   });
 };
 
+const deletePropertyValuesDB = (propertyName, materialParticipation, hours, description, date) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      'DELETE FROM properties WHERE propertyName = ? AND materialParticipation = ? AND hours = ? AND description = ? AND date = ?',
+      [propertyName, materialParticipation, hours, description, date],
+      () => {
+        console.log('Property values deleted successfully');
+        // let propertiesCopy = [...propertyItems];
+        // propertiesCopy.splice(index, 1);
+        // setPropertyItems(propertiesCopy);
+      },
+      (error) => {
+        console.log('Error deleting property:', error);
+      }
+    );
+  });
+};
 
-export { createTable, addPropertyDB, deletePropertyDB, AddPropertyValuesDB, selectTotalHoursFromProperties, selectGeneralHoursFromProperties, selectMaterialParticipationHoursFromProperties, getAllPropertyValuesDB, db };
+
+export { createTable, addPropertyDB, deletePropertyDB, AddPropertyValuesDB, selectTotalHoursFromProperties, selectGeneralHoursFromProperties, selectMaterialParticipationHoursFromProperties, getAllPropertyValuesDB, deletePropertyValuesDB, db };

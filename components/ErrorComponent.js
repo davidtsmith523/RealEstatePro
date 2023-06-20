@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
   errorMessageText: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#FF0000'
+    color: '#FF0000',
+    textAlign: 'center',
   },
 });
 export default ErrorComponent;

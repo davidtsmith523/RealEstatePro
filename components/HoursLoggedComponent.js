@@ -5,18 +5,19 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HoursLoggedComponent = (props) => {
   const handleDeleteProperty = () => {
-    props.onDelete();
-    console.log('here');
+    props.onDelete(props.index, props.name, props.materialParticipation, props.hours, props.description, props.date);
+    // console.log('here');
   };
 
   return (
     <TouchableOpacity>
       <View style={styles.property}>
         <View style={styles.propertyLeft}>
-          <Text style={styles.propertyText}><Text style={styles.boldText}>Property: </Text>1234 West Star Street</Text>
-          <Text style={styles.propertyText}><Text style={styles.boldText}>Material Participation: </Text>Yes</Text>
-          <Text style={styles.propertyText}><Text style={styles.boldText}>Description: </Text>I raked up the yard that was full of leaves. I also painted a dresser and mopped around the house for new tenets</Text>
-          <Text style={styles.propertyText}><Text style={styles.boldText}>Date: </Text>June 4, 2023 </Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Property: </Text>{props.name}</Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Material Participation: </Text>{props.materialParticipation}</Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Hours: </Text>{props.hours}</Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Description: </Text>{props.description}</Text>
+          <Text style={styles.propertyText}><Text style={styles.boldText}>Date: </Text>{props.date}</Text>
         </View>
         <TouchableOpacity onPress={() => handleDeleteProperty()}>
           <Ionicons style={styles.trashcan} name={'trash'} size={14} />

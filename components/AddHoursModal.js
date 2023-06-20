@@ -16,11 +16,23 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleErrorMessage = () => {
-    setErrorMessage('Please select correct values for "Hours" and "Material Participation"')
+    if (numberValue === null) {
+      setErrorMessage('Hours must be entered');
+    } else if (yesNoValue == null) {
+      setErrorMessage('Material Participation must be entered');
+    } else if (description == "" || description == null) {
+      setErrorMessage('Description must be entered');
+    }
+
   };
 
   const handleCloseButtonPress = () => {
     if (yesNoValue === null && numberValue === null && (description == "" || description == null)) {
+      setDate(new Date());
+      setnumberValue(null);
+      setyesNoValue(null);
+      setDescription(null);
+      setErrorMessage(null);
       closeModal();
     } else {
     Alert.alert(
@@ -35,6 +47,11 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
           text: 'Yes',
           style: 'destructive',
           onPress: () => {
+            setDate(new Date());
+            setnumberValue(null);
+            setyesNoValue(null);
+            setDescription(null);
+            setErrorMessage(null);
             closeModal();
           },
         },
@@ -50,7 +67,7 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
   };
 
   const handleAddButtonPress = () => {
-    if (numberValue === null || yesNoValue === null) {
+    if (numberValue === null || yesNoValue === null || description == null) {
       handleErrorMessage();
     } else {
       setErrorMessage(null);
@@ -65,16 +82,17 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
         {
           text: 'Add',
           onPress: () => {
-            AddPropertyValuesDB(date, numberValue, yesNoValue, description, selectedProperty);
-            console.log("Selected property:", selectedProperty);
-            console.log("Selected date:", date);
-            console.log("Selected hours:", numberValue);
-            console.log("Selected Material Participation:", yesNoValue);
-            console.log("Selected Material Participation Description:", description);
+            AddPropertyValuesDB(date.toLocaleDateString(), numberValue, yesNoValue, description, selectedProperty);
+            // console.log("Selected property:", selectedProperty);
+            // console.log("Selected date:", date);
+            // console.log("Selected hours:", numberValue);
+            // console.log("Selected Material Participation:", yesNoValue);
+            // console.log("Selected Material Participation Description:", description);
             setDate(new Date());
             setnumberValue(null);
             setyesNoValue(null);
             setDescription(null);
+            setErrorMessage(null);
             closeModal();
           },
         },
@@ -118,8 +136,8 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
         onValueChange={(value) => setyesNoValue(value)}
         placeholder={{ label: 'Select Yes/No...', value: null }}
         items={[
-          {label: 'Yes', value: 'yes' },
-          { label: 'No', value: 'no' },
+          {label: 'Yes', value: 'Yes' },
+          { label: 'No', value: 'No' },
         ]}
         />
         </View>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect} from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, TextInput, Keyboard, Button, Alert, TouchableWithoutFeedback, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, TextInput, Keyboard, Button, Alert, TouchableWithoutFeedback, ScrollView, TouchableOpacity} from 'react-native';
 import Property from '../../components/Property';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+// import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddHoursModal from '../../components/AddHoursModal';
 import {createTable, addPropertyDB, deletePropertyDB, selectTotalHoursFromProperties, selectGeneralHoursFromProperties, selectMaterialParticipationHoursFromProperties, getAllPropertyValuesDB } from '../../components/PropertiesDB';
 import RealEstateProgressBars from '../../components/RealEstateProgressBars';
+import HoursLoggedScreen from './HoursLoggedScreen';
 
 export default function PropertiesScreen( {navigation}) {
   const [totalHours, setTotalHours] = useState([]);
@@ -15,53 +16,92 @@ export default function PropertiesScreen( {navigation}) {
   const [propertyItems, setPropertyItems] = useState([]);
 
 
-
-
-  useEffect(() => {
-    fetchPropertyNames();
-    console.log("here5");
-  }, []);
-
-  const fetchPropertyNames = () => {
-    getAllPropertyValuesDB((results) => {
-      const names = results.map((property) => property.propertyName);
-      setPropertyItems(names);
-      console.log(names)
-    });
-  };
-  
-
-  useEffect(() => {
-    // Retrieve Total Hours from the database
-    selectTotalHoursFromProperties((hoursArray) => {
-      setTotalHours(hoursArray.reduce((a, b) => a + b, 0));
-    });
-  }, [selectTotalHoursFromProperties]);
-
-  useEffect(() => {
-    // Retrieve General Hours from the database
-    selectGeneralHoursFromProperties((hoursArray) => {
-      setGeneralHours(hoursArray.reduce((a, b) => a + b, 0));
-    });
-  }, [selectGeneralHoursFromProperties]);
-
-  useEffect(() => {
-    // Retrieve Material Participation Hours from the database
-    selectMaterialParticipationHoursFromProperties((hoursArray) => {
-      setMaterialParticipationHours(hoursArray.reduce((a, b) => a + b, 0));
-    });
-  }, [selectMaterialParticipationHoursFromProperties]);
-
   useEffect(() => {
     createTable();
   }, []);
+
+  useEffect(() => {
+    fetchPropertyNames();
+
+    // console.log("here5");
+  }, []);
+
+  useEffect(() => {
+    console.log("wow")
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchHours();
+    });
+
+    return unsubscribe;
+  }, []);
+
+
+  useEffect(() => {
+    console.log("UseEffect");
+    fetchTotalHoursFromProperties();
+    fetchGeneralHoursFromProperties();
+    fetchMaterialParticipationHoursFromProperties();
+  });
+
+  function fetchHours() {
+    fetchTotalHoursFromProperties();
+    fetchGeneralHoursFromProperties();
+    fetchMaterialParticipationHoursFromProperties();
+  };
+
+  const fetchPropertyNames = () => {
+    getAllPropertyValuesDB((results) => {
+      // const names = results.map((property) => property.propertyName);
+      const uniqueNames = [...new Set(results.map((property) => property.propertyName))];
+      setPropertyItems(uniqueNames);
+      // setPropertyItems(names);
+      // console.log(uniqueNames)
+    });
+  };
+  
+  
+  const fetchTotalHoursFromProperties = () => {
+    selectTotalHoursFromProperties((hoursArray) => {
+      setTotalHours(hoursArray.reduce((a, b) => a + b, 0));
+      
+    });
+  };
+
+  const fetchGeneralHoursFromProperties = () => {
+    selectGeneralHoursFromProperties((hoursArray) => {
+      setGeneralHours(hoursArray.reduce((a, b) => a + b, 0));
+      // console.log(`General Hours: ${generalHours}`);
+    });
+  };
+
+  const fetchMaterialParticipationHoursFromProperties = () => {
+    selectMaterialParticipationHoursFromProperties((hoursArray) => {
+      setMaterialParticipationHours(hoursArray.reduce((a, b) => a + b, 0));
+    });
+  };
+
+  // useEffect(() => {
+  //   // Retrieve General Hours from the database
+  //   selectGeneralHoursFromProperties((hoursArray) => {
+  //     setGeneralHours(hoursArray.reduce((a, b) => a + b, 0));
+  //   });
+  // }, [selectGeneralHoursFromProperties]);
+
+  // useEffect(() => {
+  //   // Retrieve Material Participation Hours from the database
+  //   selectMaterialParticipationHoursFromProperties((hoursArray) => {
+  //     setMaterialParticipationHours(hoursArray.reduce((a, b) => a + b, 0));
+  //   });
+  // }, [selectMaterialParticipationHoursFromProperties]);
+
+  
   const [selectedProperty, setSelectedProperty] = useState();
   // New Modal
   const [modalVisible, setModalVisible] = useState(false);
 
   const openModal = (userSelectedProperty) => {
     // setSelectedProperty(userSelectedProperty);
-    console.log(userSelectedProperty);
+    // console.log(userSelectedProperty);
     setSelectedProperty(userSelectedProperty);
     setModalVisible(true);
     // return (<AddHoursModal visible={modalVisible} selectedProperty={userSelectedProperty} closeModal={closeModal} />);
@@ -77,10 +117,30 @@ export default function PropertiesScreen( {navigation}) {
 
 
   const handleAddProperty = () => {
-    Keyboard.dismiss();
-    setPropertyItems([...propertyItems, property]);
-    setProperty(null);
-    addPropertyDB(property, propertyItems, setPropertyItems);
+    console.log("here1")
+    // console.log(`This is property: ${property}`);
+    if (property === null || property === undefined) {
+      Alert.alert(
+        'Null Property',
+        'Property cannot be null',
+        [
+          {
+            text: 'OK',
+            onPress: () => console.log('OK Pressed'),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      Keyboard.dismiss();
+      setPropertyItems([...propertyItems, property]);
+      setProperty(null);
+      addPropertyDB(property, propertyItems, setPropertyItems);
+      fetchTotalHoursFromProperties();
+      fetchGeneralHoursFromProperties();
+      fetchMaterialParticipationHoursFromProperties();
+    }
+    
 
     // db.transaction((tx) => {
     //   console.log(property)
@@ -119,7 +179,10 @@ export default function PropertiesScreen( {navigation}) {
             propertiesCopy.splice(index, 1);
             setPropertyItems(propertiesCopy);
             //console.log(deletedProperty)
-            deletePropertyDB(deletedProperty, index, propertyItems, setPropertyItems)
+            deletePropertyDB(deletedProperty, index, propertyItems, setPropertyItems);
+            fetchTotalHoursFromProperties();
+            fetchGeneralHoursFromProperties();
+            fetchMaterialParticipationHoursFromProperties();
             // db.transaction((tx) => {
             //   tx.executeSql(
             //     'DELETE FROM properties WHERE propertyName = ?',
@@ -144,6 +207,7 @@ export default function PropertiesScreen( {navigation}) {
 
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    
     <View style={styles.container}>
     {/* <ScrollView style={styles.scrollViewStyle}> */}
       {/* Properties */}
@@ -202,7 +266,7 @@ export default function PropertiesScreen( {navigation}) {
       </KeyboardAvoidingView>
       {/* New Modal */}
       <View>
-        <Button title="Open Modal" onPress={openModal} />
+        {/* <Button title="Open Modal" onPress={openModal} /> */}
         <AddHoursModal visible={modalVisible} selectedProperty={selectedProperty} closeModal={closeModal} />
       </View>
       {/* New Modal */}
@@ -272,7 +336,7 @@ const styles = StyleSheet.create({
     
   },
   progressBarsContainer: {
-    paddingBottom: 50,
+    paddingBottom: 60,
   },
   progressBarContainer: {
     justifyContent: 'center',
