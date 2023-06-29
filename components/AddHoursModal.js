@@ -1,17 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, Button, StyleSheet, TouchableOpacity, Alert, TextInput, Keyboard, TouchableWithoutFeedback} from 'react-native';
-// import DatePicker from 'react-native-datepicker';
-// import DatePicker from 'react-native-date-picker';
+// import DatePicker from 'react-native-date-picker'
+// import Picker from 'react-native-picker-select';
+// import RNPickerSelect from 'react-native-picker-select';
+// import Picker from '@react-native-community/picker';
+// import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Picker from 'react-native-picker-select';
+
 import ErrorComponent from './ErrorComponent';
 import { AddPropertyValuesDB } from './PropertiesDB';
+import SelectDropdown from 'react-native-select-dropdown';
+
+
 
 const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
   const [yesNoValue, setyesNoValue] = useState(null);
   const [numberValue, setnumberValue] = useState(null);
   const [date, setDate] = useState(new Date());
   const [description, setDescription] = useState(null);
+  const [open, setOpen] = useState(false)
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  
+
 
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -33,6 +43,7 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
       setyesNoValue(null);
       setDescription(null);
       setErrorMessage(null);
+      setShowDatePicker(false);
       closeModal();
     } else {
     Alert.alert(
@@ -58,11 +69,6 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
       ],
       { cancelable: false }
     );
-    // console.log("here")
-    // console.log("Selected date:", date);
-    // console.log("Selected hours:", numberValue);
-    // console.log("Selected Material Participation:", yesNoValue);
-    // closeModal();
     }
   };
 
@@ -99,13 +105,9 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
       ],
       { cancelable: false }
     );
-    // console.log("here")
-    // console.log("Selected date:", date);
-    // console.log("Selected hours:", numberValue);
-    // console.log("Selected Material Participation:", yesNoValue);
-    // closeModal();
     }
   };
+  
 
   return (
     <Modal animationType='slide' visible={visible}>
@@ -120,7 +122,17 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
       <Text style={styles.titleText}>Add Real Estate Hours</Text>
         {errorMessage !== '' && <ErrorComponent errorMessage={errorMessage} />}
       <Text style={styles.numberText}>Hours</Text>
-        <Picker style={styles.numberPicker}
+      <SelectDropdown
+        data={Array.from({ length: 24 }, (_, index) => String(index + 1))}
+        defaultButtonText="Select number of hours..."
+        onSelect={(itemValue) => setnumberValue(itemValue)}
+        buttonTextAfterSelection={(selectedItem) => selectedItem}
+        rowTextForSelection={(item) => item}
+        buttonStyle={styles.numberPicker}
+        buttonTextStyle={styles.numberPickerText}
+        dropdownStyle={styles.dropdown}
+      />
+        {/* <Picker style={styles.numberPicker}
           value={numberValue}
           onValueChange={(value) => setnumberValue(value)}
           placeholder={{ label: 'Select number of hours...', value: null }}
@@ -128,10 +140,22 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
             label: (i + 1).toString(),
             value: (i + 1).toString(),
           }))}
-        />
+        /> */}
         <Text style={styles.yesNoText}>Material Participation</Text>
         <View style={styles.yesNoPicker}>
-        <Picker 
+            <SelectDropdown
+            data={[
+              'Yes', 'No'
+            ]}
+            defaultButtonText="Select Yes/No..."
+            onSelect={(itemValue) => setyesNoValue(itemValue)}
+            buttonTextAfterSelection={(selectedItem) => selectedItem}
+            rowTextForSelection={(item) => item}
+            buttonStyle={styles.numberPicker}
+            buttonTextStyle={styles.numberPickerText}
+            dropdownStyle={styles.dropdown}
+          />
+        {/* <Picker 
         value={yesNoValue}
         onValueChange={(value) => setyesNoValue(value)}
         placeholder={{ label: 'Select Yes/No...', value: null }}
@@ -139,7 +163,7 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
           {label: 'Yes', value: 'Yes' },
           { label: 'No', value: 'No' },
         ]}
-        />
+        /> */}
         </View>
         <Text style={styles.descriptionText}>Description</Text>
         <TextInput
@@ -150,30 +174,67 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
           multiline={true}
         />
         <Text style={styles.dateText}>Date</Text>
-        <DateTimePicker
-          style={styles.datePicker}
-          testID="dateTimePicker"
-          value={date}
-          mode="date"
-          is24Hour={true}
-          onChange={(event, selectedDate) => {
-            if (selectedDate) {
-              setDate(selectedDate);
-            }
-          }}
-        />
+        {/* <Button title="Show Date Picker" />
+          <DateTimePickerModal
+            isVisible={true}
+            mode="date"
+            // onConfirm={handleConfirm}
+            // onCancel={hideDatePicker}
+          /> */}
+          {Platform.OS === 'ios' && (
+            <>
+                <DateTimePicker
+                  style={styles.datePicker}
+                  testID="dateTimePicker"
+                  value={date}
+                  mode="date"
+                  is24Hour={true}
+                  onChange={(event, selectedDate) => {
+                if (selectedDate) {
+                  setDate(selectedDate);
+                }
+              }}
+            />
+            </>
+          )}
+          {Platform.OS === 'android' && (
+              <>
+                <TouchableOpacity
+                  style={styles.openDateButton}
+                  onPress={() => setShowDatePicker(true)}
+                  >
+                <Text style={{ color: 'white', textAlign: 'center' }}>Press to Select Date</Text>
+
+                </TouchableOpacity>
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={date}
+                    mode="date"
+                    is24hour={true}
+                    onChange={(event, selectedDate) => {
+                      setShowDatePicker(false);
+                      setDate(selectedDate);
+                      console.log(selectedDate)
+                      
+                    }}
+                  />
+                )}
+              </>
+            )}
+        
         {/* <Button style={styles.closeButton} title="Close" onPress={closeModal} /> */}
         <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleCloseButtonPress}>
+              <View style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>Close</Text>
+              </View>
+            </TouchableOpacity>
           <TouchableOpacity onPress={handleAddButtonPress}>
               <View style={styles.addButton}>
                 <Text style={styles.addButtonText}>Add</Text>
               </View>
             </TouchableOpacity>
-          <TouchableOpacity onPress={handleCloseButtonPress}>
-              <View style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
-              </View>
-            </TouchableOpacity>
+          
           </View>
         {/* <Button style={styles.addButton} title="Add" onPress={closeModal} /> */}
       </View>
@@ -184,13 +245,14 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    paddingTop: 110,
+    //justifyContent: 'center',
     // alignItems: 'center',
     marginLeft: 30,
   },
   titleText: {
-    paddingTop: 10,
-    paddingBottom: 50,
+    // paddingTop: -10,
+    paddingBottom: 20,
     fontSize: 28,
     fontWeight: 'bold',
   },
@@ -217,13 +279,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  numberPicker: {
-    // width: 200,  // Set the desired width
-    // height: 40,  // Set the desired height
-  },
+  // numberPicker: {
+  //   width: 200,  // Set the desired width
+  //   // height: 40,  // Set the desired height
+  //   color: 'transparent',
+  // },
   dateText: {
     paddingTop: 10,
-    paddingBottom: 5,
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
@@ -258,9 +320,40 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   buttonContainer: {
+    marginTop: 30,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
+  numberPicker: {
+    width: 300,
+    height: 40,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+  },
+  numberPickerText: {
+    color: 'black',
+  },
+  dropdown: {
+    marginTop: 8,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+  },
+  descriptionInput: {
+    width: 275,
+    fontSize: 16,
+  },
+  openDateButton: {
+    width: 200, 
+    backgroundColor: '#0096FF', 
+    padding: 10,
+    marginBottom: 20,
+    borderRadius: 10,
+  }
 
 });
 

@@ -1,19 +1,13 @@
 import React, { useState, useEffect} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-// import Property from '../../components/Property';
 import HoursLoggedComponent from '../../components/HoursLoggedComponent';
 import { getAllPropertyValuesDB, deletePropertyValuesDB } from '../../components/PropertiesDB';
-import XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { encode } from 'base-64';
-
 
 export default function HoursLoggedScreen( {fetchHours}) {
   const [properties, setProperties] = useState([]);
-  const [currentMonth, setCurrentMonth] = useState('');
-  const [currentYear, setCurrentYear] = useState('');
 
   useEffect(() => {
     fetchAllPropertyValues();
@@ -23,12 +17,12 @@ export default function HoursLoggedScreen( {fetchHours}) {
   // Might want to come up with something different here
   useFocusEffect(
     React.useCallback(() => {
-      // Fetch property values when the screen gains focus
       fetchAllPropertyValues();
     }, [])
   );
 
   const handleDeleteProperty = (index, name, materialParticipation, hours, description, date) => {
+    console.log("here")
     Alert.alert(
       'Confirm Deletion',
       'Are you sure you want to delete this property and its values?',
@@ -42,11 +36,9 @@ export default function HoursLoggedScreen( {fetchHours}) {
           style: 'destructive',
           onPress: () => {
             deletePropertyValuesDB(name, materialParticipation, hours, description, date);
-            // Perform the delete operation
             const updatedProperties = [...properties];
             updatedProperties.splice(index, 1);
             setProperties(updatedProperties);
-            // fetchHours();
           },
         },
       ],
@@ -57,20 +49,11 @@ export default function HoursLoggedScreen( {fetchHours}) {
   const fetchAllPropertyValues = () => {
     getAllPropertyValuesDB((propertyData) => {
       setProperties(propertyData);
-      // console.log("This is property data:");
-      // propertyData.forEach((property) => {
-        // console.log("Property Name:", property.propertyName);
-        // console.log("Date:", property.date);
-        // console.log("Hours:", property.hours);
-        // console.log("Material Participation:", property.materialParticipation);
-        // console.log("Description:", property.description);
-      // });
 
       const filteredProperties = propertyData.filter((property) => property.hours !== null);
 
       const sortedProperties = filteredProperties.sort((a, b) => {
         const dateA = new Date(formatDate(a.date));
-        // console.log(dateA)
         const dateB = new Date(formatDate(b.date));
         return dateA - dateB;
       });
@@ -79,7 +62,6 @@ export default function HoursLoggedScreen( {fetchHours}) {
         const [month, day, year] = dateString.split('/');
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
       }
-      // console.log(sortedProperties);
       setProperties(sortedProperties);
 
     });
@@ -129,11 +111,6 @@ export default function HoursLoggedScreen( {fetchHours}) {
   
 
   return (
-    // <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    //   <Text
-    //     onPress={() => navigation.navigate('Properties')}
-    //     style={{ fontSize: 20, fontWeight: 'bold' }}>Hours Logged Screen</Text>
-    // </View>
     <ScrollView style={styles.container}>
       <View style={styles.propertiesWrapper}>
         <Text style={styles.sectionTitle}>Hours Logged</Text>
@@ -152,22 +129,12 @@ export default function HoursLoggedScreen( {fetchHours}) {
           onDelete={handleDeleteProperty}
         />
         ))}
-          {/* This is where the properties will go */}
-          {/* {
-            propertyItems.map((property, index) => {
-              return (
-                <TouchableOpacity key={index} onPress={() => openModal(property)} >
-                  <Property  text={property} onDelete={() => deleteProperty(index)}/>
-                </TouchableOpacity>
-              )
-            })
-          } */}
         </View>
       </View>
       <View style={styles.buttonWrapper}>
         <TouchableOpacity onPress={exportToExcel}>
-          <View style={styles.addWrapper}>
-            <Text style={styles.addText}>Export to Excel</Text>
+          <View style={styles.exportWrapper}>
+            <Text style={styles.exportText}>Export to Excel</Text>
           </View>
         </TouchableOpacity>
       </View>
@@ -202,18 +169,17 @@ const styles = StyleSheet.create({
   properties: {
     marginTop: 30,
   },
-  addWrapper: {
+  exportWrapper: {
     width: 240,
     height: 55,
-    backgroundColor: '#55BCF6',
+    backgroundColor: 'lightcoral',
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  addText: {
+  exportText: {
     fontSize: 15,
     color: '#fff',
-    // fontWeight: 'bold',
   },
   buttonWrapper: {
     justifyContent: 'center',

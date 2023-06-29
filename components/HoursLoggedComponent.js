@@ -1,16 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HoursLoggedComponent = (props) => {
   const handleDeleteProperty = () => {
     props.onDelete(props.index, props.name, props.materialParticipation, props.hours, props.description, props.date);
-    // console.log('here');
+    console.log('here');
   };
 
   return (
-    <TouchableOpacity>
+    <View>
       <View style={styles.property}>
         <View style={styles.propertyLeft}>
           <Text style={styles.propertyText}><Text style={styles.boldText}>Property: </Text>{props.name}</Text>
@@ -20,10 +19,10 @@ const HoursLoggedComponent = (props) => {
           <Text style={styles.propertyText}><Text style={styles.boldText}>Date: </Text>{props.date}</Text>
         </View>
         <TouchableOpacity onPress={() => handleDeleteProperty()}>
-          <Ionicons style={styles.trashcan} name={'trash'} size={14} />
+          <Ionicons style={styles.trashcan} name={'trash'} size={20} />
         </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -55,8 +54,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   trashcan: {
-    width: 14,
-    height: 14,
+    width: 20,
+    height: 20,
   },
   boldText: {
     fontWeight: 'bold',

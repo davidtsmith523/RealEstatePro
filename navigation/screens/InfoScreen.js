@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { View, Text, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Linking} from 'react-native';
 // import HTML from 'react-native-render-html';
 
 export default function InfoScreen( {navigation}) {
@@ -10,6 +10,9 @@ export default function InfoScreen( {navigation}) {
 //     <li>This is the third bullet point.</li>
 //   </ul>
 //   `;
+  const handleLinkPress = () => {
+    Linking.openURL('https://www.whitecoatinvestor.com/real-estate-professional-status-reps/');
+  };
 
   return (
     <ScrollView style={styles.scrollViewStyle}>
@@ -46,6 +49,9 @@ export default function InfoScreen( {navigation}) {
         <Text style={styles.paragraph}>5. You materially participated in the activity (other than by meeting this fifth test) for any five (whether or not consecutive) of the 10 immediately preceding tax years.</Text>
         <Text style={styles.paragraph}>6. The activity is a personal service activity in which you materially participated for any three (whether or not consecutive) preceding tax years. An activity is a personal service activity if it involves the performance of personal services in the fields of health (including veterinary services), law, engineering, architecture, accounting, actuarial science, performing arts, consulting, or any other trade or business in which capital is not a material income-producing factor.</Text>
         <Text style={styles.paragraph}>7. Based on all the facts and circumstances, you participated in the activity on a regular, continuous, and substantial basis during the year.</Text>
+        <Text style={styles.paragraph} onPress={handleLinkPress}>
+          Credit to <Text style={styles.blueTag}>whitecoatinvestor.com</Text> for the information
+        </Text>
         <Text style={styles.subTitle}>What does this mean?</Text>
         <Text style={styles.paragraph}>It means you are actively involved in managing Real Estate investments.</Text>
         <Text style={styles.paragraph}>Ex. Repairs, Improvements, Management Decisions, Hiring, Cleaning</Text>
@@ -87,6 +93,11 @@ const styles = StyleSheet.create({
     paddingTop: 22,
     color: '#FF0000',
     textAlign: 'center',
+  },
+  blueTag: {
+    paddingTop: 10,
+    fontSize: 12,
+    color: 'dodgerblue'
   },
   // scrollViewStyle: {
   //   paddingBottom: 30,

@@ -212,5 +212,5 @@ const deletePropertyValuesDB = (propertyName, materialParticipation, hours, desc
   });
 };
 
-
+// error selecting Property Values and error selecting hours from properties
 export { createTable, addPropertyDB, deletePropertyDB, AddPropertyValuesDB, selectTotalHoursFromProperties, selectGeneralHoursFromProperties, selectMaterialParticipationHoursFromProperties, getAllPropertyValuesDB, deletePropertyValuesDB, db };

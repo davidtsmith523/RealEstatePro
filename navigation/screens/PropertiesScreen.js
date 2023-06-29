@@ -1,19 +1,19 @@
 import React, { useState, useEffect} from 'react';
-import { View, Text, StyleSheet, KeyboardAvoidingView, TextInput, Keyboard, Button, Alert, TouchableWithoutFeedback, ScrollView, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, KeyboardAvoidingView, TextInput, Keyboard, Alert, ScrollView, TouchableOpacity} from 'react-native';
 import Property from '../../components/Property';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddHoursModal from '../../components/AddHoursModal';
 import {createTable, addPropertyDB, deletePropertyDB, selectTotalHoursFromProperties, selectGeneralHoursFromProperties, selectMaterialParticipationHoursFromProperties, getAllPropertyValuesDB } from '../../components/PropertiesDB';
 import RealEstateProgressBars from '../../components/RealEstateProgressBars';
-import HoursLoggedScreen from './HoursLoggedScreen';
 
 export default function PropertiesScreen( {navigation}) {
   const [totalHours, setTotalHours] = useState([]);
   const [generalHours, setGeneralHours] = useState([]);
   const [materialParticipationHours, setMaterialParticipationHours] = useState([]);
-  const [propertyNames, setPropertyNames] = useState([]);
+  // const [propertyNames, setPropertyNames] = useState([]);
   const [property, setProperty] = useState();
   const [propertyItems, setPropertyItems] = useState([]);
+  const [selectedProperty, setSelectedProperty] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
 
 
   useEffect(() => {
@@ -94,17 +94,12 @@ export default function PropertiesScreen( {navigation}) {
   //   });
   // }, [selectMaterialParticipationHoursFromProperties]);
 
-  
-  const [selectedProperty, setSelectedProperty] = useState();
-  // New Modal
-  const [modalVisible, setModalVisible] = useState(false);
-
   const openModal = (userSelectedProperty) => {
-    // setSelectedProperty(userSelectedProperty);
-    // console.log(userSelectedProperty);
+    console.log("herere")
+    console.log(userSelectedProperty);
     setSelectedProperty(userSelectedProperty);
     setModalVisible(true);
-    // return (<AddHoursModal visible={modalVisible} selectedProperty={userSelectedProperty} closeModal={closeModal} />);
+    
 
   };
   
@@ -221,9 +216,11 @@ export default function PropertiesScreen( {navigation}) {
           {
             propertyItems.map((property, index) => {
               return (
-                <TouchableOpacity key={index} onPress={() => openModal(property)} >
-                  <Property  text={property} onDelete={() => deleteProperty(index)}/>
-                </TouchableOpacity>
+                //<TouchableOpacity style={styles.propertyBox} key={index} onPress={() => openModal(property)} >
+                  <View key={index}>
+                  <Property text={property} onPress={() => openModal(property)} onDelete={() => deleteProperty(index)}/>
+                  </View>
+                //</TouchableOpacity>
               )
             })
           }
@@ -255,7 +252,7 @@ export default function PropertiesScreen( {navigation}) {
       {/* Write a property */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0} // Adjust the value based on your nee
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
         style={styles.writePropertyWrapper}>
           <TextInput style={styles.input} placeholder={"Add a property"} value={property} onChangeText={text => setProperty(text)}/>
           <TouchableOpacity onPress={() => handleAddProperty()} >
@@ -283,6 +280,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#E8EAED',
   },
+  propertyBox: {
+    backgroundColor: 'black',
+    
+  },
+
   propertiesWrapper:{
     paddingTop: 30,
     paddingHorizontal: 20,
@@ -322,7 +324,7 @@ const styles = StyleSheet.create({
   addWrapper: {
     width: 60,
     height: 60,
-    backgroundColor: '#55BCF6',
+    backgroundColor: 'lightcoral',
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
@@ -336,7 +338,7 @@ const styles = StyleSheet.create({
     
   },
   progressBarsContainer: {
-    paddingBottom: 60,
+    paddingBottom: 85,
   },
   progressBarContainer: {
     justifyContent: 'center',
