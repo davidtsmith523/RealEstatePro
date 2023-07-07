@@ -23,21 +23,17 @@ export default function PropertiesScreen( {navigation}) {
   useEffect(() => {
     fetchPropertyNames();
 
-    // console.log("here5");
   }, []);
 
   useEffect(() => {
-    console.log("wow")
     const unsubscribe = navigation.addListener('focus', () => {
       fetchHours();
     });
-
     return unsubscribe;
   }, []);
 
 
   useEffect(() => {
-    console.log("UseEffect");
     fetchTotalHoursFromProperties();
     fetchGeneralHoursFromProperties();
     fetchMaterialParticipationHoursFromProperties();
@@ -51,11 +47,8 @@ export default function PropertiesScreen( {navigation}) {
 
   const fetchPropertyNames = () => {
     getAllPropertyValuesDB((results) => {
-      // const names = results.map((property) => property.propertyName);
       const uniqueNames = [...new Set(results.map((property) => property.propertyName))];
       setPropertyItems(uniqueNames);
-      // setPropertyItems(names);
-      // console.log(uniqueNames)
     });
   };
   
@@ -70,7 +63,6 @@ export default function PropertiesScreen( {navigation}) {
   const fetchGeneralHoursFromProperties = () => {
     selectGeneralHoursFromProperties((hoursArray) => {
       setGeneralHours(hoursArray.reduce((a, b) => a + b, 0));
-      // console.log(`General Hours: ${generalHours}`);
     });
   };
 
@@ -80,40 +72,16 @@ export default function PropertiesScreen( {navigation}) {
     });
   };
 
-  // useEffect(() => {
-  //   // Retrieve General Hours from the database
-  //   selectGeneralHoursFromProperties((hoursArray) => {
-  //     setGeneralHours(hoursArray.reduce((a, b) => a + b, 0));
-  //   });
-  // }, [selectGeneralHoursFromProperties]);
-
-  // useEffect(() => {
-  //   // Retrieve Material Participation Hours from the database
-  //   selectMaterialParticipationHoursFromProperties((hoursArray) => {
-  //     setMaterialParticipationHours(hoursArray.reduce((a, b) => a + b, 0));
-  //   });
-  // }, [selectMaterialParticipationHoursFromProperties]);
-
   const openModal = (userSelectedProperty) => {
-    console.log("herere")
-    console.log(userSelectedProperty);
     setSelectedProperty(userSelectedProperty);
     setModalVisible(true);
-    
-
   };
   
   const closeModal = () => {
     setModalVisible(false);
-    // setProperty(null);
   };
-  // New Modal
-
-
 
   const handleAddProperty = () => {
-    console.log("here1")
-    // console.log(`This is property: ${property}`);
     if (property === null || property === undefined) {
       Alert.alert(
         'Null Property',
@@ -121,7 +89,7 @@ export default function PropertiesScreen( {navigation}) {
         [
           {
             text: 'OK',
-            onPress: () => console.log('OK Pressed'),
+            // onPress: () => console.log('OK Pressed'),
           },
         ],
         { cancelable: false }
@@ -135,27 +103,9 @@ export default function PropertiesScreen( {navigation}) {
       fetchGeneralHoursFromProperties();
       fetchMaterialParticipationHoursFromProperties();
     }
-    
-
-    // db.transaction((tx) => {
-    //   console.log(property)
-    //   tx.executeSql(
-    //     'INSERT INTO properties (propertyName) VALUES (?)',
-    //     [property],
-    //     () => {
-    //       console.log('Property added successfully');
-    //       setPropertyItems([...propertyItems, property]);
-    //       setProperty(null);
-    //     },
-    //     (error) => {
-    //       console.log('Error adding property:', error);
-    //     }
-    //   );
-    // });
   }
 
   const deleteProperty = (index) => {
-    console.log("OnPress");
     Alert.alert(
       'Confirmation',
       'Are you sure you want to delete the property?',
@@ -168,31 +118,14 @@ export default function PropertiesScreen( {navigation}) {
           text: 'Delete',
           style: 'destructive',
           onPress: () => {
-            console.log("Delete");
             let propertiesCopy = [...propertyItems];
             const deletedProperty = propertiesCopy[index];
             propertiesCopy.splice(index, 1);
             setPropertyItems(propertiesCopy);
-            //console.log(deletedProperty)
             deletePropertyDB(deletedProperty, index, propertyItems, setPropertyItems);
             fetchTotalHoursFromProperties();
             fetchGeneralHoursFromProperties();
             fetchMaterialParticipationHoursFromProperties();
-            // db.transaction((tx) => {
-            //   tx.executeSql(
-            //     'DELETE FROM properties WHERE propertyName = ?',
-            //     [deletedProperty],
-            //     () => {
-            //       console.log('Property deleted successfully');
-            //       let propertiesCopy = [...propertyItems];
-            //       propertiesCopy.splice(index, 1);
-            //       setPropertyItems(propertiesCopy);
-            //     },
-            //     (error) => {
-            //       console.log('Error deleting property:', error);
-            //     }
-            //   );
-            // });
           },
         },
       ],
@@ -201,26 +134,19 @@ export default function PropertiesScreen( {navigation}) {
   };
 
   return (
-    // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     
     <View style={styles.container}>
-    {/* <ScrollView style={styles.scrollViewStyle}> */}
-      {/* Properties */}
       <ScrollView style={styles.scrollViewStyle}>
       <View style={styles.propertiesWrapper}>
         <Text style={styles.sectionTitle}>Properties</Text>
         <Text style={styles.subTitle}>Add a Property and Tap to Add Hours</Text>
-
         <View style={styles.properties}>
-          {/* This is where the properties will go */}
           {
             propertyItems.map((property, index) => {
               return (
-                //<TouchableOpacity style={styles.propertyBox} key={index} onPress={() => openModal(property)} >
                   <View key={index}>
                   <Property text={property} onPress={() => openModal(property)} onDelete={() => deleteProperty(index)}/>
                   </View>
-                //</TouchableOpacity>
               )
             })
           }
@@ -246,10 +172,6 @@ export default function PropertiesScreen( {navigation}) {
         </View>
       </View>
       </ScrollView>
-      
-      {/* </ScrollView> */}
-
-      {/* Write a property */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
@@ -261,17 +183,10 @@ export default function PropertiesScreen( {navigation}) {
             </View>
           </TouchableOpacity>
       </KeyboardAvoidingView>
-      {/* New Modal */}
       <View>
-        {/* <Button title="Open Modal" onPress={openModal} /> */}
         <AddHoursModal visible={modalVisible} selectedProperty={selectedProperty} closeModal={closeModal} />
       </View>
-      {/* New Modal */}
-    </View>
-    
-    // </TouchableWithoutFeedback>
-    
-    
+    </View>    
   );
 }
 
@@ -284,12 +199,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     
   },
-
   propertiesWrapper:{
     paddingTop: 30,
     paddingHorizontal: 20,
     paddingBottom: 80,
-    
   },
   sectionTitle: {
     fontSize: 24,
@@ -319,7 +232,6 @@ const styles = StyleSheet.create({
     borderColor: '#C0C0C0',
     borderWidth: 1,
     width: 250,
-    
   },
   addWrapper: {
     width: 60,
@@ -333,10 +245,10 @@ const styles = StyleSheet.create({
     fontSize: 34,
     color: '#fff',
   },
-  scrollViewStyle: {
-    // flexGrow: 1,
+  // scrollViewStyle: {
+  //   // flexGrow: 1,
     
-  },
+  // },
   progressBarsContainer: {
     paddingBottom: 85,
   },
@@ -345,11 +257,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 20,
   },
-  progressBar: {
-    // position: 'absolute',
-    // bottom: 10,
-    
-  },
+  // progressBar: {
+  //   // position: 'absolute',
+  //   // bottom: 10,
+  // },
   generalRealEstateText: {
     paddingBottom: 2,
     marginLeft: 5,

@@ -22,7 +22,6 @@ export default function HoursLoggedScreen( {fetchHours}) {
   );
 
   const handleDeleteProperty = (index, name, materialParticipation, hours, description, date) => {
-    console.log("here")
     Alert.alert(
       'Confirm Deletion',
       'Are you sure you want to delete this property and its values?',
@@ -114,8 +113,6 @@ export default function HoursLoggedScreen( {fetchHours}) {
     <ScrollView style={styles.container}>
       <View style={styles.propertiesWrapper}>
         <Text style={styles.sectionTitle}>Hours Logged</Text>
-        <Text style={styles.year}>2023</Text>
-        <Text style={styles.month}>June</Text>
         <View style={styles.properties}>
         {properties.map((property, index) => (
           <HoursLoggedComponent

@@ -1,15 +1,7 @@
 import * as react from 'react';
 import { View, Text, StyleSheet, ScrollView, Linking} from 'react-native';
-// import HTML from 'react-native-render-html';
 
 export default function InfoScreen( {navigation}) {
-//   const bulletPointContent = `
-//   <ul>
-//     <li>This is the first bullet point.</li>
-//     <li>This is the second bullet point.</li>
-//     <li>This is the third bullet point.</li>
-//   </ul>
-//   `;
   const handleLinkPress = () => {
     Linking.openURL('https://www.whitecoatinvestor.com/real-estate-professional-status-reps/');
   };
@@ -17,7 +9,6 @@ export default function InfoScreen( {navigation}) {
   return (
     <ScrollView style={styles.scrollViewStyle}>
     <View style={styles.container}>
-      {/* Properties */}
       <View style={styles.infoWrapper}>
         <Text style={styles.sectionTitle}>Real Estate Professional Status Information</Text>
         <Text style={styles.disclaimer}>This information is for demonstration pruposes only. If you want to learn more about Real Estate, please contact an accountant or Real Estate Lawyer</Text>
@@ -37,9 +28,6 @@ export default function InfoScreen( {navigation}) {
         <Text style={styles.subTitle}>2. 50% or more profressional hours in Real Estate</Text>
         <Text style={styles.paragraph}>This means that if you have a job, you must log more real estate hours than you regular job.</Text>
         <Text style={styles.paragraph}>The caviat here is that if your are married, then one person can have a regular job and work as much as they want. The other person has to just spend the 750 hours and material participate to qualify as real estate profressional status</Text>
-
-
-        {/* <HTML source={{ html: bulletPointContent }}/> */}
         <Text style={styles.subTitle}>3. Material Participation</Text>
         <Text style={styles.paragraph}>There are 7 tests that the IRS uses</Text>
         <Text style={styles.paragraph}>1. You participated in the activity for more than 500 hours.</Text>
@@ -61,9 +49,6 @@ export default function InfoScreen( {navigation}) {
         <Text style={styles.paragraph}>2. Work 750 hours or more during the tax year in real estate</Text>
         <Text style={styles.paragraph}>3. Over 50% of these hours are Material Participation</Text>
         <Text style={styles.disclaimer}>These are only for suggestion purposes. Please consult an accountant if any other questions</Text>
-
-
-
       </View>
     </View>
     </ScrollView>
@@ -79,7 +64,6 @@ const styles = StyleSheet.create({
   infoWrapper:{
     paddingTop: 30,
     paddingHorizontal: 20,
-    // paddingBottom: 80,
     paddingBottom: 10,
 
   },
@@ -99,9 +83,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'dodgerblue'
   },
-  // scrollViewStyle: {
-  //   paddingBottom: 30,
-  // },
   subTitle: {
     fontSize: 16,
     fontWeight: 'bold',

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RepApp",
-    "slug": "RepApp",
+    "name": "Real Estate Professional Tracker",
+    "slug": "RealEstateProfessionalTracker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,6 +18,8 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.realestateprofessional.tracker",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -25,6 +27,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0dc06fee-a8c2-48d1-9fc6-f6205bac8eb5"
+      }
     }
   }
 }

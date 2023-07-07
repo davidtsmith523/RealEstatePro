@@ -1,28 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, Button, StyleSheet, TouchableOpacity, Alert, TextInput, Keyboard, TouchableWithoutFeedback} from 'react-native';
-// import DatePicker from 'react-native-date-picker'
-// import Picker from 'react-native-picker-select';
-// import RNPickerSelect from 'react-native-picker-select';
-// import Picker from '@react-native-community/picker';
-// import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 import ErrorComponent from './ErrorComponent';
 import { AddPropertyValuesDB } from './PropertiesDB';
 import SelectDropdown from 'react-native-select-dropdown';
-
-
 
 const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
   const [yesNoValue, setyesNoValue] = useState(null);
   const [numberValue, setnumberValue] = useState(null);
   const [date, setDate] = useState(new Date());
   const [description, setDescription] = useState(null);
-  const [open, setOpen] = useState(false)
   const [showDatePicker, setShowDatePicker] = useState(false);
-  
-
-
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleErrorMessage = () => {
@@ -89,11 +77,6 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
           text: 'Add',
           onPress: () => {
             AddPropertyValuesDB(date.toLocaleDateString(), numberValue, yesNoValue, description, selectedProperty);
-            // console.log("Selected property:", selectedProperty);
-            // console.log("Selected date:", date);
-            // console.log("Selected hours:", numberValue);
-            // console.log("Selected Material Participation:", yesNoValue);
-            // console.log("Selected Material Participation Description:", description);
             setDate(new Date());
             setnumberValue(null);
             setyesNoValue(null);
@@ -113,11 +96,6 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
     <Modal animationType='slide' visible={visible}>
       
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        {/* <View>
-          {errorMessage !== null ? (
-            <ErrorComponent errorMessage={'Please select correct values for "Hours" and "Material Participation"'} />
-          ) : null}
-        </View> */}
       <View style={styles.container}>
       <Text style={styles.titleText}>Add Real Estate Hours</Text>
         {errorMessage !== '' && <ErrorComponent errorMessage={errorMessage} />}
@@ -132,15 +110,6 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
         buttonTextStyle={styles.numberPickerText}
         dropdownStyle={styles.dropdown}
       />
-        {/* <Picker style={styles.numberPicker}
-          value={numberValue}
-          onValueChange={(value) => setnumberValue(value)}
-          placeholder={{ label: 'Select number of hours...', value: null }}
-          items={Array.from({ length: 24 }, (_, i) => ({
-            label: (i + 1).toString(),
-            value: (i + 1).toString(),
-          }))}
-        /> */}
         <Text style={styles.yesNoText}>Material Participation</Text>
         <View style={styles.yesNoPicker}>
             <SelectDropdown
@@ -155,15 +124,6 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
             buttonTextStyle={styles.numberPickerText}
             dropdownStyle={styles.dropdown}
           />
-        {/* <Picker 
-        value={yesNoValue}
-        onValueChange={(value) => setyesNoValue(value)}
-        placeholder={{ label: 'Select Yes/No...', value: null }}
-        items={[
-          {label: 'Yes', value: 'Yes' },
-          { label: 'No', value: 'No' },
-        ]}
-        /> */}
         </View>
         <Text style={styles.descriptionText}>Description</Text>
         <TextInput
@@ -174,22 +134,15 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
           multiline={true}
         />
         <Text style={styles.dateText}>Date</Text>
-        {/* <Button title="Show Date Picker" />
-          <DateTimePickerModal
-            isVisible={true}
-            mode="date"
-            // onConfirm={handleConfirm}
-            // onCancel={hideDatePicker}
-          /> */}
           {Platform.OS === 'ios' && (
             <>
-                <DateTimePicker
-                  style={styles.datePicker}
-                  testID="dateTimePicker"
-                  value={date}
-                  mode="date"
-                  is24Hour={true}
-                  onChange={(event, selectedDate) => {
+              <DateTimePicker
+                style={styles.datePicker}
+                testID="dateTimePicker"
+                value={date}
+                mode="date"
+                is24Hour={true}
+                onChange={(event, selectedDate) => {
                 if (selectedDate) {
                   setDate(selectedDate);
                 }
@@ -198,45 +151,39 @@ const AddHoursModal = ({selectedProperty, visible, closeModal }) => {
             </>
           )}
           {Platform.OS === 'android' && (
-              <>
-                <TouchableOpacity
-                  style={styles.openDateButton}
-                  onPress={() => setShowDatePicker(true)}
-                  >
-                <Text style={{ color: 'white', textAlign: 'center' }}>Press to Select Date</Text>
-
-                </TouchableOpacity>
-                {showDatePicker && (
-                  <DateTimePicker
-                    value={date}
-                    mode="date"
-                    is24hour={true}
-                    onChange={(event, selectedDate) => {
-                      setShowDatePicker(false);
-                      setDate(selectedDate);
-                      console.log(selectedDate)
-                      
-                    }}
-                  />
-                )}
-              </>
-            )}
-        
-        {/* <Button style={styles.closeButton} title="Close" onPress={closeModal} /> */}
+            <>
+              <TouchableOpacity
+                style={styles.openDateButton}
+                onPress={() => setShowDatePicker(true)}
+              >
+              <Text style={{ color: 'white', textAlign: 'center' }}>Press to Select Date</Text>
+              </TouchableOpacity>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={date}
+                  mode="date"
+                  is24hour={true}
+                  onChange={(event, selectedDate) => {
+                    setShowDatePicker(false);
+                    setDate(selectedDate);
+                    
+                  }}
+                />
+              )}
+            </>
+          )}
         <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleCloseButtonPress}>
-              <View style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
-              </View>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={handleCloseButtonPress}>
+            <View style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity onPress={handleAddButtonPress}>
-              <View style={styles.addButton}>
-                <Text style={styles.addButtonText}>Add</Text>
-              </View>
-            </TouchableOpacity>
-          
-          </View>
-        {/* <Button style={styles.addButton} title="Add" onPress={closeModal} /> */}
+            <View style={styles.addButton}>
+              <Text style={styles.addButtonText}>Add</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
       </TouchableWithoutFeedback>
     </Modal>
@@ -246,12 +193,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 110,
-    //justifyContent: 'center',
-    // alignItems: 'center',
     marginLeft: 30,
   },
   titleText: {
-    // paddingTop: -10,
     paddingBottom: 20,
     fontSize: 28,
     fontWeight: 'bold',
@@ -262,28 +206,22 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  yesNoPicker: {
-    // width: 200,  // Set the desired width
-    // height: 40,  // Set the desired height
-  },
+  // yesNoPicker: {
+  //   // width: 200,  // Set the desired width
+  //   // height: 40,  // Set the desired height
+  // },
   descriptionText: {
     paddingTop: 10,
     paddingBottom: 5,
     fontSize: 24,
     fontWeight: 'bold',
   },
-
   numberText: {
     paddingTop: 10,
     paddingBottom: 5,
     fontSize: 24,
     fontWeight: 'bold',
   },
-  // numberPicker: {
-  //   width: 200,  // Set the desired width
-  //   // height: 40,  // Set the desired height
-  //   color: 'transparent',
-  // },
   dateText: {
     paddingTop: 10,
     fontSize: 24,

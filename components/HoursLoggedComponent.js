@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HoursLoggedComponent = (props) => {
   const handleDeleteProperty = () => {
     props.onDelete(props.index, props.name, props.materialParticipation, props.hours, props.description, props.date);
-    console.log('here');
   };
 
   return (
@@ -32,7 +31,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     flexDirection: 'row',
-    alignItems: 'flex-start', // Adjust vertical alignment as needed
+    alignItems: 'flex-start',
     justifyContent: 'space-between',
     marginBottom: 20,
   },

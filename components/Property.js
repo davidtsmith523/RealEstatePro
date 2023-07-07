@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
@@ -8,11 +7,9 @@ const Property = (props) => {
 
   const handleDeleteProperty = () => {
     props.onDelete();
-    // console.log('here');
   }
   const handleAddProperty = () => {
     props.onPress();
-    // console.log('here');
   }
 
   return (
@@ -26,7 +23,6 @@ const Property = (props) => {
         
       </View>
       </TouchableOpacity>
-      {/* <View style={styles.circular}></View> */}
       <View>
         <TouchableOpacity style={styles.test} onPress={() => handleDeleteProperty()}>
           <Ionicons style={styles.trashcan} name={'trash'} size={20}/>
@@ -66,15 +62,8 @@ const styles = StyleSheet.create({
   trashcan: {
     width: 20,
     height: 20,
-    // borderColor: '#55BCF6',
-    // borderWidth: 2,
-    // borderRadius: 5,
+
   },
-  // test: {
-  //   backgroundColor: 'black',
-  //   width: 20,
-  //   height: 20
-  // },
   test2: {
     backgroundColor: 'transparent',
     width: 275,

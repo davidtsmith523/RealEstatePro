@@ -1,24 +1,3 @@
-// import React from 'react';
-// import { View, Text, StyleSheet, ScrollView } from 'react-native';
-// import ProgressBar from 'react-native-progress/Bar';
-
-// function RealEstateProgressBars() {
-//   return (
-//       <ProgressBar progress={0.1} style={styles.progressBar} />
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   progressBar: {
-//     width: 350,
-//     height: 20,
-//     color: "#6AE431",
-//     borderWidth: 2,
-//   },
-
-// });
-
-// export default RealEstateProgressBars;
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
